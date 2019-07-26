@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Querys>
+
+
+
+<!-- 
+/**
+ * @Student_ID : IT18178678
+ * @Name : S.M.A.S.Senevirathne
+ */
+ -->
+
+
+	<query id="drop_classes_table">
+         <![CDATA[        
+            DROP TABLE IF EXISTS Classes
+        ]]>
+	</query>
+
+	<query id="create_classes_table">
+         <![CDATA[        
+            create table Classes(
+				classesID varchar(10),
+				classesName varchar(10) unique,
+				classesYear integer,
+				classesNoOfStudents integer,
+				classesTeacher varchar(100),
+				classesHall varchar(10),
+				primary key(classesID))
+        ]]>
+	</query>
+	
+	<query id="add_classes_table">
+         <![CDATA[        
+            insert into Classes(classesID, classesName, classesYear, classesNoOfStudents, classesTeacher, classesHall) 
+            values (?,?,?,?,?,?)
+        ]]>
+	</query>
+	
+	<query id="get_classes_table_entry_count">
+         <![CDATA[        
+           select * from Classes
+        ]]>
+	</query>
+
+	<query id="get_selected_year_student_list">
+         <![CDATA[        
+           select studentID, studentName, studentYear
+           from Student
+           where className = 'None' and studentYear = ?
+        ]]>
+	</query>
+	
+	<query id="get_inserted_student_list">
+         <![CDATA[        
+           select studentID, studentName, studentYear
+           from Student
+           where className = ?
+        ]]>
+	</query>
+	
+	<query id="remove_class">
+         <![CDATA[        
+           delete from Classes 
+           where classesID = ?
+        ]]>
+	</query>
+	
+	<query id="get_class_details">
+         <![CDATA[        
+           select * from Classes
+           where classesName = ?
+        ]]>
+	</query>
+	
+	<query id="remove_students_from_class">
+         <![CDATA[        
+           update Student 
+           SET className = 'None' 
+           where className = ?
+        ]]>
+	</query>
+	
+	<query id="update_Class_Details">
+         <![CDATA[        
+           update Classes 
+           set classesName = ?, classesNoOfStudents = ?, classesTeacher = ?, classesHall = ? 
+           where classesID = ?
+        ]]>
+	</query>
+	
+	<query id="get_Student_By_ID">
+         <![CDATA[        
+           select * from Student where studentID = ?
+        ]]>
+	</query>
+	
+	<query id="drop_marks_table">
+         <![CDATA[        
+           DROP TABLE IF EXISTS Marks
+        ]]>
+	</query>
+	
+	<query id="create_marks_table">
+         <![CDATA[        
+           create table Marks(
+				markID varchar(20),
+    			studentID varchar(10) references Student(studentID),
+    			subName varchar(20) references Subjects(subName),
+    			marks real,
+    			primary key(markID)
+			)
+		]]>
+	</query>
+	"
+	<query id="add_marks_table">
+         <![CDATA[        
+           insert into Marks values (?,?,?,?)
+		]]>
+	</query>
+	
+	<query id="select_all_marks_table">
+         <![CDATA[        
+           select * from Marks
+		]]>
+	</query>
+	
+	<query id="get_subject_list">
+         <![CDATA[        
+           select * from Subjects where year = ?
+		]]>
+	</query>
+	
+	<query id="get_student_mark">
+         <![CDATA[        
+           select * from Marks where studentID = ?
+		]]>
+	</query>
+	
+	<query id="get_class_student_list">
+         <![CDATA[        
+           select studentID, studentName, studentYear
+           from Student 
+           where className = ?
+		]]>
+	</query>
+	
+	<query id="update_student_mark">
+         <![CDATA[        
+           update Marks set marks = ? where markID = ?
+		]]>
+	</query>
+	
+	<query id="delete_student_mark">
+         <![CDATA[        
+           delete from Marks where studentID = ?
+		]]>
+	</query>
+	
+	<query id="get_student_place_list">
+         <![CDATA[        
+           select m.studentID, s.studentName, sum(m.marks) sum , avg(m.marks) avg, count(m.marks) subjects
+           from marks m inner join student s on m.studentID = s.studentID
+           where s.className = ?
+           group by m.studentID
+           order by sum(m.marks) desc
+		]]>
+	</query>
+	
+	<query id="get_selected_student_place_list">
+         <![CDATA[        
+           select m.studentID, s.studentName, sum(m.marks) sum , avg(m.marks) avg, count(m.marks) subjects
+		   from marks m inner join student s on m.studentID = s.studentID
+		   where m.studentID = ?
+		   group by m.studentID;
+		]]>
+	</query>
+	
+	<query id="add_student_to_class">
+         <![CDATA[        
+           update Student
+           set className = ? 
+           where studentID = ?
+		]]>
+	</query>
+	
+	<query id="remove_student_to_class">
+         <![CDATA[        
+           update Student set className = 'None' where studentID = ?
+		]]>
+	</query>
+	
+	<query id="update_student_to_class">
+         <![CDATA[        
+           update Student set className = ? where className = ?
+		]]>
+	</query>
+	
+	<query id="drop_register_table">
+         <![CDATA[        
+           DROP TABLE IF EXISTS Register
+        ]]>
+	</query>
+	
+	<query id="create_register_table">
+         <![CDATA[        
+           create table Register(
+				id varchar(20),
+				studentID varchar(10) references student(studentID),
+				dayStatus varchar(5) default 'p',
+				markDay datetime default NOW(),
+    			classesName varchar(10) references Classes(classesName ) on update cascade,
+				primary key (id)
+   	 		)
+        ]]>
+	</query>
+	
+	<query id="add_register_table">
+         <![CDATA[        
+           insert into Register(id, studentID, classesName) values (?,?,?)
+        ]]>
+	</query>
+	
+	<query id="select_all_from_register_table">
+         <![CDATA[        
+           select * from Register;
+        ]]>
+	</query>
+	
+	<query id="get_total_days">
+         <![CDATA[        
+           select count(distinct markDay) as TPD 
+		   from Register
+		   where classesName = ?
+        ]]>
+	</query>
+	
+	<query id="get_total_prasent_days">
+         <![CDATA[        
+           select count(distinct markDay) 
+           from Register 
+           where studentID = ?
+        ]]>
+	</query>
+	
+	<query id="delete_register_entry">
+         <![CDATA[        
+           delete from Register 
+           Where classesName = ?
+        ]]>
+	</query>
+	
+	<query id="get_class_name">
+         <![CDATA[        
+    		 select OwnClass
+ 			 from teacher
+ 			 where teacherId = ?
+        ]]>
+	</query>
+	
+	<query id="set_class_name">
+         <![CDATA[        
+    		   update teacher
+			   set OwnClass = ?
+ 			   where teacherId = ? 
+        ]]>
+	</query>
+	
+	<query id="drop_assignment_table">
+         <![CDATA[        
+    		 DROP TABLE IF EXISTS Assignment  
+        ]]>
+	</query>
+	
+	<query id="create_assignment_table">
+         <![CDATA[        
+    		  create TABLE Assignment (
+  					assignmentid int(11) NOT NULL AUTO_INCREMENT,
+ 					name varchar(45) NOT NULL,
+  					description varchar(250) NOT NULL,
+  					subId varchar(20) NOT NULL REFERENCES Subjects (subID),
+  					date date NOT NULL,
+  					PRIMARY KEY (assignmentid)
+				)  
+        ]]>
+	</query>
+	
+	<query id="add_assignment_table">
+         <![CDATA[        
+    		  insert into Assignment (name, description, subId, date) values (?,?,?,?)
+        ]]>
+	</query>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+<!-- 
+/**
+ * @Student_ID : IT18180626
+ * @Name : H.M.A.N.Welagedara
+ */
+
+ -->
+	
+	
+	
+	
+	
+	<query id="delete_student_table">
+         <![CDATA[        
+           DROP TABLE IF EXISTS Student
+        ]]>
+	</query>
+	
+	<query id="create_student_table">
+         <![CDATA[        
+           create table Student(
+				studentID varchar(10),
+				studentName varchar(100),
+				studentAddress varchar(100),
+				phoNo varchar(11),
+				email varchar(100),
+				gender varchar(10),
+				studentYear integer,
+				className varchar(10) default 'None' references Classes(className),
+				primary key(studentID)
+			)
+        ]]>
+	</query>
+	
+	<query id="add_student_table">
+         <![CDATA[        
+           insert into Student(studentID, studentName, studentYear) 
+           values(?,?,?)
+        ]]>
+	</query>
+	
+	<query id="select_all_from_student">
+         <![CDATA[        
+           select * from Student
+        ]]>
+	</query>
+	
+	<query id="delete_from_student">
+         <![CDATA[        
+           delete from Student 
+           where studentID = ?
+        ]]>
+	</query>
+	
+	<query id="get_student_details_">
+         <![CDATA[        
+           select * from Student 
+           where studentID = ?
+        ]]>
+	</query>
+	
+	<query id="update_student_details">
+         <![CDATA[        
+           update Student 
+           set studentName = ?, studentYear = ? 
+           where studentID = ?
+        ]]>
+	</query>
+	
+	<query id="delete_all_student">
+         <![CDATA[        
+           delete from Student
+        ]]>
+	</query>
+	
+	<query id="delete_subject_table">
+         <![CDATA[        
+           DROP TABLE IF EXISTS Subjects
+        ]]>
+	</query>
+	
+	<query id="create_subject_table">
+         <![CDATA[        
+           create table Subjects(
+				subID varchar(20),
+    			subjectCode varchar(20),
+    			subName varchar(20),
+    			year integer,
+    			primary key (subID)
+		   )
+        ]]>
+	</query>
+	
+	<query id="add_subject_table">
+         <![CDATA[        
+         	insert into Subjects 
+         	values(?,?,?,?);
+        ]]>
+	</query>
+	
+	<query id="select_all_from_subject_table">
+         <![CDATA[        
+         	select * 
+         	from Subjects
+        ]]>
+	</query>
+	
+	<query id="delect_subject">
+         <![CDATA[        
+         	delete from Subjects 
+         	where subID = ?
+        ]]>
+	</query>
+	
+	<query id="get_subject_by_id">
+         <![CDATA[        
+         	select * 
+         	from Subjects 
+         	where subID = ?;
+        ]]>
+	</query>
+	
+	<query id="update_subject_details">
+         <![CDATA[        
+    		update Subjects 
+    		set subjectCode = ?, subName = ?, year = ? 
+    		where subID = ?     	
+        ]]>
+	</query>
+	
+	<query id="delet_all_subjects">
+         <![CDATA[        
+    		delete from Subjects	
+        ]]>
+	</query>
+	
+	<query id="get_subject_by_year">
+         <![CDATA[        
+    		select * 
+    		from Subjects 
+    		where year = ?
+        ]]>
+	</query>
+	
+	<query id="drop_timetabledetails_table">
+         <![CDATA[        
+    		DROP TABLE IF EXISTS TimetableDetails
+        ]]>
+	</query>
+	
+	<query id="drop_timetable_table">
+         <![CDATA[        
+    		DROP TABLE IF EXISTS Timetable
+        ]]>
+	</query>
+	
+	<query id="create_timetable_table">
+         <![CDATA[        
+    		create table Timetable(
+				timeTableID varchar(20),
+    			timeTableName varchar(20),
+   				year integer,
+    			primary key(timeTableID)
+			)
+        ]]>
+	</query>
+	
+	<query id="create_timetabledetails_table">
+         <![CDATA[        
+    		create table TimetableDetails(
+				timeTableDetailsID varchar(20),
+    			timeTableID varchar(20) references Timetable(timeTableID),
+    			subName varchar(20),
+    			examDay date ,
+    			startTime time,
+   			 	endTime time,
+    			primary key(timeTableDetailsID)
+			)
+        ]]>
+	</query>
+	
+	<query id="add_timetable_table">
+         <![CDATA[        
+    		insert into Timetable 
+    		values(?,?,?)
+        ]]>
+	</query>
+	
+	<query id="select_all_from_timetable">
+         <![CDATA[        
+    		select * 
+    		from Timetable
+        ]]>
+	</query>
+	
+	<query id="add_timetabledetails_table">
+         <![CDATA[        
+    		insert into TimetableDetails 
+    		values(?,?,?,?,?,?)
+        ]]>
+	</query>
+	
+	<query id="select_all_from_timetabledetails">
+         <![CDATA[        
+    		select * 
+    		from TimetableDetails
+        ]]>
+	</query>
+	
+	<query id="get_timetabledetails_by_timetable_id">
+         <![CDATA[        
+    		select * 
+    		from TimetableDetails 
+    		where timeTableID = ?
+        ]]>
+	</query>
+	
+	<query id="delete_timetable_details">
+         <![CDATA[        
+    		delete from TimetableDetails
+    		where timeTableID = ?;
+        ]]>
+	</query>
+	
+	<query id="delete_timetable">
+         <![CDATA[        
+    		delete from Timetable
+    		where timeTableID = ?;
+        ]]>
+	</query>
+	
+	
+	<query id="get_students_by_year">
+         <![CDATA[        
+    		  select *
+    		  from Student
+    		  where studentYear = ?
+        ]]>
+	</query>
+	
+	<query id="get_subjects_by_year">
+         <![CDATA[        
+    		  select *
+    		  from Subjects
+    		  where year = ?
+        ]]>
+	</query>
+	
+	<query id="get_timetable_by_year">
+         <![CDATA[        
+    		  select *
+    		  from Timetable
+    		  where year = ?
+        ]]>
+	</query>
+	
+	<query id="get_timetable_by_ID">
+         <![CDATA[        
+    		  select *
+    		  from Timetable
+    		  where timeTableID = ?
+        ]]>
+	</query>
+	
+	<query id="update_timetable">
+         <![CDATA[        
+    		  update Timetable
+			  set timeTableName = ?, year = ?
+			  where timeTableID = ?
+        ]]>
+	</query>
+	
+	<query id="update_timetableDetails">
+         <![CDATA[        
+    		  update timetabledetails
+			  set examDay = ?, startTime = ?, endTime = ?
+			  where timeTableDetailsID = ?
+        ]]>
+	</query>
+	
+		<query id="teacher_login">
+         <![CDATA[        
+            select * from teacher where userName = ? AND password = ?
+        ]]>
+	</query>
+	
+	<query id="staff_login">
+         <![CDATA[        
+            select * from staffmember where userName = ? AND password = ?
+        ]]>
+	</query>
+	
+	
+
+</Querys>
