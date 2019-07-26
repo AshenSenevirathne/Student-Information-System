@@ -1,2 +1,2 @@
-# Student-InformationSystem
+# Student-Information System
 OOP Project
